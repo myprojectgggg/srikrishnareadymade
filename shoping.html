@@ -1,0 +1,1506 @@
+<!DOCTYPE html>
+<html lang="bn">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Shopping - Order Collection</title>
+
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, "Segoe UI", sans-serif;
+    background: #f4f6f9;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+}
+
+.container {
+    max-width: 900px;
+    margin: auto;
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+h1 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 5px;
+}
+
+.sub-title {
+    text-align: center;
+    color: #777;
+    margin-bottom: 25px;
+}
+
+.section-card {
+    border: 1px solid #e2e8f0;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    background: #fff;
+}
+
+.customer-card {
+    background: #ebf8ff;
+    border-left: 5px solid #3182ce;
+}
+
+.product-title {
+    font-size: 21px;
+    font-weight: bold;
+    color: #2b6cb0;
+    margin-bottom: 18px;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 8px;
+}
+
+.form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.form-group {
+    flex: 1;
+    min-width: 180px;
+}
+
+.full-width {
+    width: 100%;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 7px;
+    font-size: 14px;
+}
+
+input,
+select {
+    width: 100%;
+    padding: 11px;
+    border: 1px solid #cbd5e0;
+    border-radius: 6px;
+    font-size: 15px;
+    outline: none;
+}
+
+input:focus,
+select:focus {
+    border-color: #3182ce;
+}
+
+
+/* ================================
+   COLOR GRID
+================================ */
+
+.color-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fill, minmax(145px, 1fr));
+
+    gap: 8px;
+
+    max-height: 220px;
+
+    overflow-y: auto;
+
+    border: 1px solid #cbd5e0;
+
+    padding: 10px;
+
+    border-radius: 7px;
+
+    background: #fafafa;
+}
+
+.color-item {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    border: 2px solid #e2e8f0;
+
+    padding: 8px;
+
+    border-radius: 7px;
+
+    background: white;
+
+    cursor: pointer;
+
+    font-size: 13px;
+
+    user-select: none;
+
+    transition: 0.2s;
+}
+
+.color-item:hover {
+    background: #f7fafc;
+    border-color: #3182ce;
+}
+
+.color-item.active {
+    border-color: #38a169 !important;
+
+    background: #f0fff4 !important;
+
+    font-weight: bold;
+
+    box-shadow:
+        0 0 6px rgba(56,161,105,0.3);
+}
+
+.color-box {
+    width: 20px;
+    height: 20px;
+
+    border-radius: 50%;
+
+    border: 1px solid #999;
+
+    flex-shrink: 0;
+}
+
+
+/* ================================
+   BUTTONS
+================================ */
+
+.btn-add {
+    width: 100%;
+
+    background: #3182ce;
+
+    color: white;
+
+    border: none;
+
+    padding: 13px;
+
+    font-size: 15px;
+
+    border-radius: 7px;
+
+    cursor: pointer;
+
+    font-weight: bold;
+
+    margin-top: 12px;
+}
+
+.btn-add:hover {
+    background: #2b6cb0;
+}
+
+.btn-delete {
+    background: #e53e3e;
+
+    color: white;
+
+    border: none;
+
+    padding: 7px 10px;
+
+    border-radius: 5px;
+
+    cursor: pointer;
+}
+
+.btn-delete:hover {
+    background: #c53030;
+}
+
+.btn-submit {
+    width: 100%;
+
+    background: #38a169;
+
+    color: white;
+
+    border: none;
+
+    padding: 15px;
+
+    font-size: 18px;
+
+    border-radius: 7px;
+
+    cursor: pointer;
+
+    font-weight: bold;
+
+    margin-top: 10px;
+}
+
+.btn-submit:hover {
+    background: #2f855a;
+}
+
+
+/* ================================
+   CART
+================================ */
+
+.cart-wrapper {
+    overflow-x: auto;
+}
+
+.cart-table {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    margin-top: 10px;
+
+    min-width: 650px;
+}
+
+.cart-table th,
+.cart-table td {
+    border: 1px solid #e2e8f0;
+
+    padding: 10px;
+
+    text-align: left;
+}
+
+.cart-table th {
+    background: #f7fafc;
+}
+
+.empty-text {
+    text-align: center;
+
+    color: #999;
+
+    padding: 30px;
+}
+
+
+/* ================================
+   MESSAGE
+================================ */
+
+#message {
+    display: none;
+
+    padding: 12px;
+
+    margin-bottom: 15px;
+
+    border-radius: 7px;
+
+    text-align: center;
+
+    font-weight: bold;
+}
+
+.success {
+    background: #f0fff4;
+    color: #276749;
+    border: 1px solid #9ae6b4;
+}
+
+.error {
+    background: #fff5f5;
+    color: #c53030;
+    border: 1px solid #feb2b2;
+}
+
+
+/* ================================
+   MOBILE
+================================ */
+
+@media(max-width:600px) {
+
+    body {
+        padding: 10px;
+    }
+
+    .container {
+        padding: 15px;
+    }
+
+    .section-card {
+        padding: 15px;
+    }
+
+    .product-title {
+        font-size: 18px;
+    }
+
+    .color-grid {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+    <h1>🛍️ অর্ডার কালেকশন</h1>
+
+    <p class="sub-title">
+        আপনার পছন্দের product নির্বাচন করে order করুন
+    </p>
+
+
+    <div id="message"></div>
+
+
+    <!-- ======================================
+         CUSTOMER
+    ======================================= -->
+
+    <div class="section-card customer-card">
+
+        <div class="form-row">
+
+            <div class="form-group">
+
+                <label>
+                    👤 কাস্টমারের নাম
+                </label>
+
+                <input
+                    type="text"
+                    id="customerName"
+                    placeholder="পুরো নাম লিখুন">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    📅 ডেলিভারি তারিখ
+                </label>
+
+                <input
+                    type="date"
+                    id="deliveryDate">
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ======================================
+         LEGGINGS
+    ======================================= -->
+
+    <div class="section-card">
+
+        <div class="product-title">
+            🛍️ Leggings
+        </div>
+
+
+        <div class="form-row">
+
+
+            <div class="form-group">
+
+                <label>
+                    টাইপ
+                </label>
+
+                <select id="legType">
+
+                    <option value="Normal">
+                        Normal
+                    </option>
+
+                    <option value="Ankle Length">
+                        Ankle Length
+                    </option>
+
+                    <option value="Printed">
+                        Printed
+                    </option>
+
+                </select>
+
+            </div>
+
+
+
+            <div class="form-group">
+
+                <label>
+                    সাইজ
+                </label>
+
+                <select id="legSize">
+
+                    <option value="S">S</option>
+
+                    <option value="M">M</option>
+
+                    <option value="XL">XL</option>
+
+                    <option value="XXL">XXL</option>
+
+                    <option value="XXXL">XXXL</option>
+
+                </select>
+
+            </div>
+
+
+
+            <div class="form-group">
+
+                <label>
+                    পরিমাণ
+                </label>
+
+                <input
+                    type="number"
+                    id="legQty"
+                    min="1"
+                    value="1">
+
+            </div>
+
+        </div>
+
+
+
+        <div class="full-width">
+
+            <label>
+                🎨 Leggings-এর Color নির্বাচন করুন
+            </label>
+
+            <div
+                class="color-grid"
+                id="legColorGrid">
+            </div>
+
+        </div>
+
+
+
+        <button
+            type="button"
+            class="btn-add"
+            id="addLeggings">
+
+            ➕ লিস্টে Leggings যোগ করুন
+
+        </button>
+
+    </div>
+
+
+
+    <!-- ======================================
+         PETTICOAT
+    ======================================= -->
+
+    <div class="section-card">
+
+        <div class="product-title">
+            🛍️ Petticoat
+        </div>
+
+
+        <div class="form-row">
+
+
+            <div class="form-group">
+
+                <label>
+                    টাইপ
+                </label>
+
+                <select id="petType">
+
+                    <option value="Goal">
+                        Goal
+                    </option>
+
+                    <option value="Chikon">
+                        Chikon
+                    </option>
+
+                    <option value="Normal">
+                        Normal
+                    </option>
+
+                </select>
+
+            </div>
+
+
+
+            <div class="form-group">
+
+                <label>
+                    পরিমাণ
+                </label>
+
+                <input
+                    type="number"
+                    id="petQty"
+                    min="1"
+                    value="1">
+
+            </div>
+
+        </div>
+
+
+
+        <div class="full-width">
+
+            <label>
+                🎨 Petticoat-এর Color নির্বাচন করুন
+            </label>
+
+            <div
+                class="color-grid"
+                id="petColorGrid">
+            </div>
+
+        </div>
+
+
+
+        <button
+            type="button"
+            class="btn-add"
+            id="addPetticoat">
+
+            ➕ লিস্টে Petticoat যোগ করুন
+
+        </button>
+
+    </div>
+
+
+
+    <!-- ======================================
+         CART
+    ======================================= -->
+
+    <div class="section-card">
+
+        <div class="product-title">
+            📋 আপনার Order List
+        </div>
+
+
+        <div class="cart-wrapper">
+
+            <table class="cart-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Product
+                        </th>
+
+                        <th>
+                            Type
+                        </th>
+
+                        <th>
+                            Size
+                        </th>
+
+                        <th>
+                            Color
+                        </th>
+
+                        <th>
+                            Qty
+                        </th>
+
+                        <th>
+                            Action
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="cartItems">
+
+                    <tr>
+
+                        <td
+                            colspan="6"
+                            class="empty-text">
+
+                            এখনো কোনো item যোগ করা হয়নি।
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ======================================
+         SUBMIT
+    ======================================= -->
+
+    <button
+        type="button"
+        class="btn-submit"
+        id="submitOrder">
+
+        📦 সম্পূর্ণ Order Confirm করুন
+
+    </button>
+
+
+</div>
+
+
+
+<script type="module">
+
+
+/* ==========================================
+   FIREBASE
+========================================== */
+
+import {
+    initializeApp
+} from
+"https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+
+
+import {
+    getFirestore,
+    collection,
+    addDoc,
+    serverTimestamp
+} from
+"https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+
+
+/* ==========================================
+   YOUR FIREBASE CONFIG
+========================================== */
+
+const firebaseConfig = {
+
+    apiKey: "AIzaSyDVQch1uvG-1_Lv87-3HN4p9YubPInNAu0",
+
+    authDomain:
+        "business-f4b55.firebaseapp.com",
+
+    projectId:
+        "business-f4b55",
+
+    storageBucket:
+        "business-f4b55.firebasestorage.app",
+
+    messagingSenderId:
+        "209310903537",
+
+    appId:
+        "1:209310903537:web:7d7117fc7208f24dab8d50"
+
+};
+
+
+
+const app =
+    initializeApp(firebaseConfig);
+
+
+const db =
+    getFirestore(app);
+
+
+
+/* ==========================================
+   COLORS
+========================================== */
+
+const totalColors = [
+
+    { name:"কালো (Black)", hex:"#000000" },
+
+    { name:"সাদা (White)", hex:"#ffffff" },
+
+    { name:"লাল (Red)", hex:"#ff0000" },
+
+    { name:"নেভি ব্লু (Navy)", hex:"#000080" },
+
+    { name:"মেরুন (Maroon)", hex:"#800000" },
+
+    { name:"রয়্যাল ব্লু (Royal Blue)", hex:"#4169e1" },
+
+    { name:"হলুদ (Yellow)", hex:"#ffff00" },
+
+    { name:"সবুজ (Green)", hex:"#008000" },
+
+    { name:"গোলাপি (Pink)", hex:"#ffc0cb" },
+
+    { name:"মিষ্টি গোলাপি (Magenta)", hex:"#ff00ff" },
+
+    { name:"অলিভ (Olive)", hex:"#808000" },
+
+    { name:"কমলা (Orange)", hex:"#ffa500" },
+
+    { name:"বেগুনি (Purple)", hex:"#800080" },
+
+    { name:"আকাশি (Sky Blue)", hex:"#87ceeb" },
+
+    { name:"টিয়া (Lime)", hex:"#00ff00" },
+
+    { name:"সোনালী (Gold)", hex:"#ffd700" },
+
+    { name:"গ্রে (Grey)", hex:"#808080" },
+
+    { name:"ডার্ক গ্রে (Dark Grey)", hex:"#a9a9a9" },
+
+    { name:"চকলেট (Brown)", hex:"#a52a2a" },
+
+    { name:"কফি (Coffee)", hex:"#4b3621" },
+
+    { name:"ক্রিম (Cream)", hex:"#fffdd0" },
+
+    { name:"পেস্ট (Mint)", hex:"#98ff98" },
+
+    { name:"ফিরোজা (Turquoise)", hex:"#40e0d0" },
+
+    { name:"ভায়োলেট (Violet)", hex:"#ee82ee" },
+
+    { name:"সিলভার (Silver)", hex:"#c0c0c0" },
+
+    { name:"স্কিন (Beige)", hex:"#f5f5dc" },
+
+    { name:"ল্যাভেন্ডার (Lavender)", hex:"#e6e6fa" },
+
+    { name:"সরিষা হলুদ (Mustard)", hex:"#ffdb58" },
+
+    { name:"খাকি (Khaki)", hex:"#f0e68c" },
+
+    { name:"কোরাল (Coral)", hex:"#ff7f50" },
+
+    { name:"নীল (Indigo)", hex:"#4b0082" },
+
+    { name:"গাঢ় সবুজ (Teal)", hex:"#008080" }
+
+];
+
+
+
+/* ==========================================
+   VARIABLES
+========================================== */
+
+let cart = [];
+
+let selectedLegColor =
+    totalColors[0].name;
+
+let selectedPetColor =
+    totalColors[0].name;
+
+
+
+/* ==========================================
+   MESSAGE
+========================================== */
+
+function showMessage(text, type) {
+
+    const message =
+        document.getElementById("message");
+
+    message.textContent = text;
+
+    message.className = type;
+
+    message.style.display = "block";
+
+
+    setTimeout(() => {
+
+        message.style.display = "none";
+
+    }, 4000);
+
+}
+
+
+
+/* ==========================================
+   LOAD COLOR GRID
+========================================== */
+
+function loadColorGrid(
+    gridId,
+    productType
+) {
+
+    const grid =
+        document.getElementById(gridId);
+
+
+    grid.innerHTML = "";
+
+
+    totalColors.forEach(
+        (color, index) => {
+
+        const item =
+            document.createElement("div");
+
+
+        item.className =
+            "color-item";
+
+
+        item.innerHTML = `
+
+            <span
+                class="color-box"
+                style="
+                    background-color:
+                    ${color.hex};
+                ">
+            </span>
+
+            <span>
+                ${color.name}
+            </span>
+
+        `;
+
+
+        item.addEventListener(
+            "click",
+            function() {
+
+
+            grid
+                .querySelectorAll(
+                    ".color-item"
+                )
+                .forEach(el => {
+
+                    el.classList.remove(
+                        "active"
+                    );
+
+                });
+
+
+            item.classList.add(
+                "active"
+            );
+
+
+            if (
+                productType ===
+                "leggings"
+            ) {
+
+                selectedLegColor =
+                    color.name;
+
+            }
+
+
+            if (
+                productType ===
+                "petticoat"
+            ) {
+
+                selectedPetColor =
+                    color.name;
+
+            }
+
+        });
+
+
+        grid.appendChild(item);
+
+
+        /* First color selected */
+
+        if (index === 0) {
+
+            item.classList.add(
+                "active"
+            );
+
+        }
+
+    });
+
+}
+
+
+
+/* ==========================================
+   ADD ITEM
+========================================== */
+
+function addItem(product) {
+
+    let item;
+
+
+    /* LEGGINGS */
+
+    if (
+        product ===
+        "Leggings"
+    ) {
+
+        const type =
+            document.getElementById(
+                "legType"
+            ).value;
+
+
+        const size =
+            document.getElementById(
+                "legSize"
+            ).value;
+
+
+        const qty =
+            parseInt(
+                document.getElementById(
+                    "legQty"
+                ).value
+            );
+
+
+        if (
+            !qty ||
+            qty < 1
+        ) {
+
+            showMessage(
+                "সঠিক quantity দিন।",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        item = {
+
+            product:
+                "Leggings",
+
+            type:
+                type,
+
+            size:
+                size,
+
+            color:
+                selectedLegColor,
+
+            qty:
+                qty
+
+        };
+
+    }
+
+
+
+    /* PETTICOAT */
+
+    if (
+        product ===
+        "Petticoat"
+    ) {
+
+        const type =
+            document.getElementById(
+                "petType"
+            ).value;
+
+
+        const qty =
+            parseInt(
+                document.getElementById(
+                    "petQty"
+                ).value
+            );
+
+
+        if (
+            !qty ||
+            qty < 1
+        ) {
+
+            showMessage(
+                "সঠিক quantity দিন।",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        item = {
+
+            product:
+                "Petticoat",
+
+            type:
+                type,
+
+            size:
+                "-",
+
+            color:
+                selectedPetColor,
+
+            qty:
+                qty
+
+        };
+
+    }
+
+
+    cart.push(item);
+
+
+    renderCart();
+
+
+    showMessage(
+        product +
+        " cart-এ যোগ হয়েছে।",
+        "success"
+    );
+
+}
+
+
+
+/* ==========================================
+   RENDER CART
+========================================== */
+
+function renderCart() {
+
+    const tbody =
+        document.getElementById(
+            "cartItems"
+        );
+
+
+    tbody.innerHTML = "";
+
+
+    if (
+        cart.length === 0
+    ) {
+
+        tbody.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="6"
+                    class="empty-text">
+
+                    এখনো কোনো item
+                    যোগ করা হয়নি।
+
+                </td>
+
+            </tr>
+
+        `;
+
+        return;
+
+    }
+
+
+    cart.forEach(
+        (item, index) => {
+
+        const row =
+            document.createElement("tr");
+
+
+        row.innerHTML = `
+
+            <td>
+                ${item.product}
+            </td>
+
+            <td>
+                ${item.type}
+            </td>
+
+            <td>
+                ${item.size}
+            </td>
+
+            <td>
+                ${item.color}
+            </td>
+
+            <td>
+                ${item.qty}
+            </td>
+
+            <td>
+
+                <button
+                    type="button"
+                    class="btn-delete">
+
+                    ❌ Delete
+
+                </button>
+
+            </td>
+
+        `;
+
+
+        row
+            .querySelector(
+                ".btn-delete"
+            )
+            .addEventListener(
+                "click",
+                function() {
+
+                    cart.splice(
+                        index,
+                        1
+                    );
+
+                    renderCart();
+
+                }
+            );
+
+
+        tbody.appendChild(row);
+
+    });
+
+}
+
+
+
+/* ==========================================
+   SAVE ORDER TO FIREBASE
+========================================== */
+
+async function submitFinalOrder() {
+
+    const customerName =
+        document.getElementById(
+            "customerName"
+        )
+        .value
+        .trim();
+
+
+    const deliveryDate =
+        document.getElementById(
+            "deliveryDate"
+        )
+        .value;
+
+
+    /* CHECK CUSTOMER */
+
+    if (!customerName) {
+
+        showMessage(
+            "দয়া করে customer name লিখুন।",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    /* CHECK DATE */
+
+    if (!deliveryDate) {
+
+        showMessage(
+            "দয়া করে delivery date নির্বাচন করুন।",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    /* CHECK CART */
+
+    if (
+        cart.length === 0
+    ) {
+
+        showMessage(
+            "কমপক্ষে একটি product যোগ করুন।",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    /* TOTAL */
+
+    const totalItems =
+        cart.reduce(
+            (
+                total,
+                item
+            ) => {
+
+                return total +
+                    Number(item.qty);
+
+            },
+            0
+        );
+
+
+    /* ORDER DATA */
+
+    const orderData = {
+
+        customerName:
+            customerName,
+
+        deliveryDate:
+            deliveryDate,
+
+        items:
+            cart,
+
+        totalItems:
+            totalItems,
+
+        status:
+            "Pending",
+
+        createdAt:
+            serverTimestamp()
+
+    };
+
+
+    try {
+
+
+        /* SAVE */
+
+        const orderRef = await addDoc(
+    collection(db, "Orders"),
+    orderData
+);
+
+window.location.href =
+    "success.html?orderId=" + orderRef.id;
+
+        console.log(
+            "Order saved:",
+            orderRef.id
+        );
+
+
+        showMessage(
+            "✅ Order সফলভাবে নেওয়া হয়েছে। Order ID: " +
+            orderRef.id,
+            "success"
+        );
+
+
+        /* CLEAR CART */
+
+        cart = [];
+
+        renderCart();
+
+
+        /* CLEAR CUSTOMER */
+
+        document.getElementById(
+            "customerName"
+        ).value = "";
+
+
+        document.getElementById(
+            "deliveryDate"
+        ).value = "";
+
+
+        document.getElementById(
+            "legQty"
+        ).value = 1;
+
+
+        document.getElementById(
+            "petQty"
+        ).value = 1;
+
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Firebase Order Error:",
+            error
+        );
+
+
+        showMessage(
+            "❌ Order save হয়নি: " +
+            error.message,
+            "error"
+        );
+
+    }
+
+}
+
+
+
+/* ==========================================
+   BUTTON EVENTS
+========================================== */
+
+document
+    .getElementById(
+        "addLeggings"
+    )
+    .addEventListener(
+        "click",
+        function() {
+
+            addItem(
+                "Leggings"
+            );
+
+        }
+    );
+
+
+document
+    .getElementById(
+        "addPetticoat"
+    )
+    .addEventListener(
+        "click",
+        function() {
+
+            addItem(
+                "Petticoat"
+            );
+
+        }
+    );
+
+
+document
+    .getElementById(
+        "submitOrder"
+    )
+    .addEventListener(
+        "click",
+        submitFinalOrder
+    );
+
+
+
+/* ==========================================
+   START
+========================================== */
+
+loadColorGrid(
+    "legColorGrid",
+    "leggings"
+);
+
+
+loadColorGrid(
+    "petColorGrid",
+    "petticoat"
+);
+
+
+renderCart();
+
+
+
+</script>
+
+
+</body>
+
+</html>

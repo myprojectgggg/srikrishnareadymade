@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <title>অর্ডার সফল হয়েছে!</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; marginTop: 50px; }
+        .success-box { border: 2px solid #28a745; display: inline-block; padding: 20px; border-radius: 8px; }
+        .order-id { font-weight: bold; color: #007bff; font-size: 1.2em; }
+    </style>
+</head>
+<body>
+
+    <div class="success-box">
+        <h1>🎉 আপনার অর্ডারটি সফলভাবে সম্পন্ন হয়েছে!</h1>
+        <p>আপনার অর্ডার আইডি (Order ID): <span id="display-order-id" class="order-id">লোডিং...</span></p>
+        <p>আমাদের সাথে থাকার জন্য ধন্যবাদ।</p>
+    </div>
+
+    <script>
+        // URL থেকে orderId নেওয়ার ফাংশন
+        function getOrderIdFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('orderId');
+        }
+
+        // পেজ লোড হওয়ার পর আইডি স্ক্রিনে দেখানোর লজিক
+        window.addEventListener('DOMContentLoaded', () => {
+            const orderId = getOrderIdFromURL();
+            
+            if (orderId) {
+                document.getElementById('display-order-id').innerText = orderId;
+            } else {
+                document.getElementById('display-order-id').innerText = "পাওয়া যায়নি";
+            }
+        });
+    </script>
+</body>
+</html>
